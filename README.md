@@ -1,7 +1,7 @@
 # NLP-based News Article Summarizer
 
-[![tests](https://github.com/hvs515/News-summarizer/actions/workflows/tests.yml/badge.svg)](https://github.com/hvs515/News-summarizer/actions/workflows/tests.yml)
-<a href="https://colab.research.google.com/github/hvs515/News-summarizer/blob/main/notebooks/news.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+[![tests](https://github.com/hvs515/MUJ-DS-23FE10CDS00400/actions/workflows/tests.yml/badge.svg)](https://github.com/hvs515/MUJ-DS-23FE10CDS00400/actions/workflows/tests.yml)
+<a href="https://colab.research.google.com/github/hvs515/MUJ-DS-23FE10CDS00400/blob/main/notebooks/news.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 Capstone project for the **Batch F NLP training program**. The system takes a raw news article and returns a headline, a summary, five key points, sentiment, named entities, text statistics, and automatic checks on the quality of the summary.
 
@@ -58,8 +58,8 @@ Capstone project for the **Batch F NLP training program**. The system takes a ra
 Requirements: Python 3.10 or newer.
 
 ```bash
-git clone https://github.com/hvs515/News-summarizer.git
-cd News-summarizer
+git clone https://github.com/hvs515/MUJ-DS-23FE10CDS00400.git
+cd MUJ-DS-23FE10CDS00400
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
