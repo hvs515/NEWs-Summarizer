@@ -1,0 +1,6 @@
+openai>=1.30
+spacy>=3.7
+nltk>=3.8
+pandas>=2.0
+streamlit>=1.35
+pytest>=8.0
