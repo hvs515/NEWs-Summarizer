@@ -9,12 +9,13 @@ Capstone project for the **Batch F NLP training program**. The system takes a ra
 
 | Field | Value |
 |---|---|
-| Name | _<your full name>_ |
-| Registration Number | _<your reg. no., e.g. 229301XXX>_ |
+| Name | Harshvardhan Saxena |
+| Registration Number | 23FE10CDS00400 |
 | Branch | _<your branch>_ |
 | Batch | F |
 | Project Title | NLP-based News Article Summarizer |
 | GitHub Username | [hvs515](https://github.com/hvs515) |
+| Instructor | [sandeepmbm](https://github.com/sandeepmbm) |
 | Training Program | _<program name>_ – NLP Capstone |
 | Capstone (team) repository | _<link to team capstone repo>_ |
 
