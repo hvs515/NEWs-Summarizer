@@ -16,10 +16,8 @@ SAMPLES = json.loads(
 
 
 class FakeClient:
-    """Stands in for openai.OpenAI so tests never hit the network."""
-
     def __init__(self, content):
-        create = lambda **kwargs: SimpleNamespace(  # noqa: E731
+        create = lambda **kwargs: SimpleNamespace(
             choices=[SimpleNamespace(message=SimpleNamespace(content=content))]
         )
         self.chat = SimpleNamespace(completions=SimpleNamespace(create=create))
@@ -49,7 +47,6 @@ def test_extractive_summary_shape(name):
     assert out["summary"] and out["headline"]
     assert 1 <= len(out["key_points"]) <= 5
     assert len(out["summary"].split()) <= 120
-    # extractive sentences come straight from the source
     for point in out["key_points"]:
         assert point in clean_text(SAMPLES[name])
 

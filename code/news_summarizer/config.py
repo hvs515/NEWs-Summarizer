@@ -1,5 +1,3 @@
-"""Central configuration for the News Article Summarizer."""
-
 import os
 
 CONFIG = {
@@ -13,12 +11,11 @@ CONFIG = {
 
 
 def get_api_key():
-    """Return the OpenAI API key from the environment or Colab Secrets, or None."""
     key = os.getenv("OPENAI_API_KEY")
     if key:
         return key
     try:
-        from google.colab import userdata  # type: ignore
+        from google.colab import userdata
 
         return userdata.get("OPENAI_API_KEY")
     except Exception:

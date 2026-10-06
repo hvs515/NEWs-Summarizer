@@ -1,9 +1,3 @@
-"""Offline extractive summarizer used as a baseline and as a fallback when no API key is set.
-
-Sentences are scored by the normalised frequency of their content words, with a small
-bonus for named entities and for appearing early in the article (lead bias in news).
-"""
-
 import re
 from collections import Counter
 
@@ -36,7 +30,6 @@ def _score_sentences(doc):
 
 
 def extractive_summary(text, max_words=None, num_points=None):
-    """Return a dict with the same keys as the LLM output: summary, key_points, headline."""
     max_words = max_words or CONFIG["SUMMARY_LENGTH_WORDS"]
     num_points = num_points or CONFIG["NUM_KEY_POINTS"]
     doc = get_nlp()(clean_text(text))
@@ -62,7 +55,6 @@ def extractive_summary(text, max_words=None, num_points=None):
 
 
 def make_headline(sentence, max_words=18):
-    """Turn the lead sentence into a headline: drop the first appositive, keep the main clause."""
     text = re.sub(r",[^,]+,", "", sentence, count=1)
     text = text.split(",")[0].strip().rstrip(".")
     words = text.split()

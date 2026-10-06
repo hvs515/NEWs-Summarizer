@@ -1,9 +1,3 @@
-"""Streamlit web app for the News Article Summarizer.
-
-Run from the repository root:
-    streamlit run code/app.py
-"""
-
 import json
 import sys
 from pathlib import Path
@@ -13,8 +7,8 @@ import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from news_summarizer import analyze_article  # noqa: E402
-from news_summarizer.config import get_api_key  # noqa: E402
+from news_summarizer import analyze_article
+from news_summarizer.config import get_api_key
 
 SAMPLES = json.loads(
     (Path(__file__).resolve().parents[1] / "resources" / "sample_articles.json").read_text()

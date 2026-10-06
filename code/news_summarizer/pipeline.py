@@ -1,5 +1,3 @@
-"""End-to-end pipeline combining classical NLP, summarization and evaluation."""
-
 from .classical import analyze_classical_nlp
 from .config import get_api_key
 from .evaluation import evaluate_summary
@@ -8,11 +6,6 @@ from .llm import query_llm_summarizer, validate_article
 
 
 def analyze_article(text, mode="auto", api_key=None, client=None):
-    """Analyze one article.
-
-    mode: "llm" (OpenAI), "extractive" (offline) or "auto" (LLM if a key is
-    available, otherwise extractive).
-    """
     validate_article(text)
     if mode == "auto":
         mode = "llm" if (client or api_key or get_api_key()) else "extractive"

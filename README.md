@@ -53,6 +53,91 @@ Capstone project for the **Batch F NLP training program**. The system takes a ra
 └── capstone/           # project report, results, screenshots
 ```
 
+## How the code works
+
+The code is in `code/news_summarizer/`, with one module per step of the pipeline.
+
+### `config.py`: settings and API key
+- `CONFIG` holds the settings:
+  - the model, which is `gpt-4o-mini` by default and can be overridden with the `NEWS_SUMMARIZER_MODEL` environment variable
+  - the maximum article length (6000 characters)
+  - the target summary length (80 words)
+  - the temperature (0.2)
+  - the number of key points (5)
+  - the spaCy models to try, in order of preference
+- `get_api_key()` returns the OpenAI key. It first looks in the `OPENAI_API_KEY` environment variable, then in Colab Secrets when running in Google Colab. If it finds neither, it returns `None`.
+
+### `classical.py`: classical NLP
+- `get_nlp()` loads `en_core_web_md` if it is installed and falls back to `en_core_web_sm`. The model is loaded once and cached.
+- `get_sentiment_analyzer()` creates NLTK's VADER analyzer and downloads its lexicon the first time if needed.
+- `clean_text()` collapses all whitespace into single spaces.
+- `sentiment_label()` turns the VADER compound score into a label: **Positive** if the score is ≥ 0.05, **Negative** if ≤ −0.05, otherwise **Neutral**.
+- `extract_entities()` maps spaCy entity labels into four groups and removes duplicates:
+  - `PERSON` → People
+  - `ORG` → Organizations
+  - `GPE`/`LOC` → Locations
+  - `DATE`/`TIME` → Dates
+- `analyze_classical_nlp()` returns the character, word and sentence counts, the sentiment scores and label, and the entities.
+
+### `extractive.py`: offline extractive summarizer
+This summarizer is the baseline. It is also the fallback when no API key is set, and it needs no internet connection.
+- **Sentence scoring** (`_score_sentences`):
+  - Each sentence is scored by how often its content words appear in the whole article. Content words exclude stop words and words shorter than 3 letters.
+  - The total is divided by √(number of words), so long sentences don't win just by being long.
+  - Each named entity in the sentence adds a small bonus.
+  - Sentences near the start get a further bonus, because news stories put the main facts first.
+- **Summary:** sentences are taken from the highest score down until about 80 words are reached. They are then printed in their original order.
+- **Key points:** the 5 highest-scoring sentences, in original order.
+- **Headline** (`make_headline`):
+  1. Take the first sentence.
+  2. Remove the first comma-enclosed aside, for example ", a leading AI startup based in San Francisco,".
+  3. Keep only the main clause, up to 18 words.
+
+### `llm.py`: LLM summarizer
+- `SYSTEM_PROMPT_TEMPLATE` asks for a JSON object with `summary`, `key_points` and `headline`. It also tells the model not to invent facts, statistics or outside claims.
+- `validate_article()` rejects empty articles and articles longer than the maximum length.
+- `query_llm_summarizer()` calls the OpenAI Chat Completions API in JSON mode and parses the reply. If the request fails or the reply is not valid JSON, it raises a clear `RuntimeError`. You can pass in a `client`, which is how the tests run without a real API key.
+
+### `evaluation.py`: summary quality checks
+There are no hand-written reference summaries, so these checks compare the summary only with the source article:
+- **Compression ratio:** summary words divided by article words.
+- **Entity coverage:** the share of the article's named entities that also appear in the summary.
+- **Unsupported numbers:** numbers in the summary that never appear in the article. In news, a wrong number is the most harmful kind of made-up fact, and this is a cheap way to catch it.
+- **Unigram precision and recall:** the overlap of single words between the summary and the article, similar to ROUGE-1.
+
+### `pipeline.py`: putting it together
+- `analyze_article(text, mode)` validates the input, runs the classical NLP, summarizes and evaluates. The `mode` can be:
+  - `"llm"`: use OpenAI
+  - `"extractive"`: use the offline summarizer
+  - `"auto"`: use the LLM if an API key or client is available, otherwise the extractive summarizer
+- `format_report()` turns the result into the plain-text report the CLI prints.
+
+### `__main__.py`: command-line tool
+It reads an article from one of four sources:
+- `--file`: a text file
+- `--text`: text passed on the command line
+- `--sample`: one of the bundled samples in `resources/sample_articles.json`
+- `--all-samples`: every bundled sample
+
+It prints a report for each article and can also save the raw results with `--json-out`.
+
+### `code/app.py`: Streamlit web app
+- The sidebar has an optional API key field, the summarizer choice and a sample picker. The LLM option only appears when a key is available.
+- The main page shows the headline, summary, key points, sentiment, word count, compression and entity coverage, and a table of entities.
+- It shows a warning if the summary contains numbers that are not in the article.
+
+### `code/tests/test_pipeline.py`: tests
+- `FakeClient` stands in for `openai.OpenAI`, so the LLM tests never make network calls or need a key.
+- The extractive tests check that every key point is copied word for word from the source article.
+- The remaining tests cover:
+  - text cleaning
+  - sentiment thresholds
+  - NER on known names
+  - rejecting empty or overlong input
+  - handling invalid JSON from the LLM
+  - detecting unsupported numbers
+  - the full pipeline in both modes
+
 ## Installation guide
 
 Requirements: Python 3.10 or newer.

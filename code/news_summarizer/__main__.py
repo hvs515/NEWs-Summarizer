@@ -1,11 +1,3 @@
-"""Command-line interface.
-
-Examples:
-    python -m news_summarizer --file article.txt
-    python -m news_summarizer --sample technology --mode extractive
-    python -m news_summarizer --all-samples --json-out results.json
-"""
-
 import argparse
 import json
 import sys

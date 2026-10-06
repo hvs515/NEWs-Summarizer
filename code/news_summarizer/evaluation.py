@@ -1,13 +1,3 @@
-"""Reference-free checks on a generated summary.
-
-These replace hand-written "Excellent" labels with measurable signals:
-- compression ratio and length vs. target
-- entity coverage: share of source entities mentioned in the summary
-- unsupported numbers: figures in the summary that never appear in the source
-  (a cheap hallucination detector for news, where numbers matter most)
-- unigram overlap (ROUGE-1-style precision/recall against the source)
-"""
-
 import re
 
 from .classical import clean_text

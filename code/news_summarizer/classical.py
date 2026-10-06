@@ -1,5 +1,3 @@
-"""Classical NLP: cleaning, statistics, VADER sentiment and spaCy NER."""
-
 import re
 from functools import lru_cache
 

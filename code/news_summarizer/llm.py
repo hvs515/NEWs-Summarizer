@@ -1,5 +1,3 @@
-"""LLM-based abstractive summarization through the OpenAI API."""
-
 import json
 
 from .config import CONFIG, get_api_key
